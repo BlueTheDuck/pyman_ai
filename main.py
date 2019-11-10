@@ -73,11 +73,12 @@ def eval_genomes(genomes, config):
                     print("Score: ", godot._pacman.score)
                     genome.fitness = godot._pacman.score
                     print("Fitness: ", genome.fitness)
-                except Exception as e:
+                    godot.quit()
+                except BrokenPipeError as bp:
+                    print("Broken pipe")
+                except:
                     godot.quit()
                     raise
-                finally:
-                    godot.quit()
         except Exception as e:
             print("Error: ", e)
         s.close()
@@ -97,6 +98,6 @@ else:
     print("New pop")
     pop = neat.Population(config)
 pop.add_reporter(neat.StdOutReporter(False))
-pop.add_reporter(neat.Checkpointer(1, 30))
+pop.add_reporter(neat.Checkpointer(1, 30, "checkpoints/neat-"))
 winner = pop.run(eval_genomes)
 print('\nBest genome:\n{!s}'.format(winner))
