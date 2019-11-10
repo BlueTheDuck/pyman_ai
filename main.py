@@ -12,7 +12,7 @@ PORT = 4040
 NN = 10
 INIT_STEPS = 10
 MAX_SCORE = 2460
-STEPS_PER_SEC = 10.0
+STEPS_PER_SEC = 20.0
 
 
 def eval_genomes(genomes, config):
@@ -32,7 +32,7 @@ def eval_genomes(genomes, config):
                     remaining_steps = INIT_STEPS
                     steps_without_progress = 0
                     last_score = 0
-                    while remaining_steps > 0 and steps_without_progress < STEPS_PER_SEC*5:
+                    while remaining_steps > 0 and steps_without_progress < STEPS_PER_SEC*3:
                         godot.update()
                         if godot._pacman.score != last_score:
                             remaining_steps += STEPS_PER_SEC
