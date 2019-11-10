@@ -4,6 +4,7 @@ from random import randint
 from godot import Godot, array_to_key
 import numpy as np
 import neat
+from sys import argv
 
 
 HOST = "127.0.0.1"
@@ -29,12 +30,16 @@ def eval_genomes(genomes, config):
                 godot = Godot(cnx)
                 try:
                     remaining_steps = INIT_STEPS
+                    steps_without_progress = 0
                     last_score = 0
-                    while remaining_steps > 0:
+                    while remaining_steps > 0 and steps_without_progress < STEPS_PER_SEC*5:
                         godot.update()
                         if godot._pacman.score != last_score:
                             remaining_steps += STEPS_PER_SEC
                             last_score = godot._pacman.score
+                            steps_without_progress = 0
+                        else:
+                            steps_without_progress += 1
                         value = net.activate(godot.to_array())
                         # print("Activation yielded ", value)
                         key = array_to_key(value)
@@ -58,7 +63,17 @@ def eval_genomes(genomes, config):
 
 config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                      neat.DefaultSpeciesSet, neat.DefaultStagnation, "neat-config")
-pop = neat.Population(config)
+pop = None
+if argv.__len__() == 2:
+    import os
+    if os.path.exists(argv[1]):
+        print("Using file")
+        pop = neat.Checkpointer.restore_checkpoint(argv[1])
+    else:
+        raise Exception("File not found")
+else:
+    print("New pop")
+    pop = neat.Population(config)
 pop.add_reporter(neat.StdOutReporter(False))
 pop.add_reporter(neat.Checkpointer(1, 30))
 winner = pop.run(eval_genomes)
