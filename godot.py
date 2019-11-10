@@ -2,6 +2,9 @@ from socket import socket
 import struct
 from array import array
 import numpy as np
+import neat
+from neat.genes import DefaultNodeGene
+from neat.genes import DefaultConnectionGene
 
 FWD = 0
 ROT_LEFT = 1
@@ -99,13 +102,16 @@ class Godot:
     def send_uint(self, n: int):
         self._cnx.send(array("B", [n]))
 
+    def send_float(self, n: float):
+        self._cnx.send(struct.pack("f", n))
+
     def move(self, dir=int):
         if dir == -1:
             return
         self.send_arr([0xFF, dir])
 
     def update(self):
-        # print("Updating internal state")
+        print("Updating internal state")
         self._dots_dist = []
         self.send_arr([0xFE, 0xFE])
         # print("Req. sent")
@@ -123,7 +129,27 @@ class Godot:
         # print("Done updating")
 
     def quit(self):
+        print("Quit")
         self.send_arr([0xFE, 0x00])
 
     def to_array(self):
         return self._pacman.to_array()
+
+    # def send_genome(self, genome: neat.DefaultGenome):
+    #     self.send_uint(0xFE)
+    #     self.send_uint(0xF0)
+    #     for key in genome.nodes.keys():
+    #         neuron: DefaultNodeGene = genome.nodes[key]
+    #     print("Sending ", genome.nodes.__len__(), " neurons")
+    #     self.send_uint(genome.nodes.__len__())
+    #     print("Sending ", genome.connections.keys().__len__(), " connections")
+    #     self.send_uint(genome.connections.keys().__len__())
+    #     for key in genome.connections.keys():
+    #         connection: DefaultConnectionGene = genome.connections[key]
+    #         print(connection)
+    #         from_n = connection.key[0]
+    #         to_n = connection.key[1]
+    #         weight = connection.weight
+    #         self.send_uint(from_n+13)
+    #         self.send_uint(to_n+13)
+    #         self.send_float(weight)

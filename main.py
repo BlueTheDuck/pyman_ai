@@ -23,31 +23,53 @@ def eval_genomes(genomes, config):
         try:
             s.listen()
             for genome_id, genome in genomes:
-                genome.fitness = 4.0
+                genome.fitness = 0.0
                 net = neat.nn.FeedForwardNetwork.create(genome, config)
                 print("Wating connection")
                 cnx, addr = s.accept()
                 godot = Godot(cnx)
+                # godot.send_genome(genome)
+                # input("Press enter")
                 try:
-                    remaining_steps = INIT_STEPS
+                    # Store last step state to check whether Pacman made any progress or not
                     steps_without_progress = 0
+                    steps_not_moving = 0
+                    dist_to_walls = {
+                        "left": 0,
+                        "front": 0,
+                        "right": 0,
+                        "back": 0,
+                    }
                     last_score = 0
-                    while remaining_steps > 0 and steps_without_progress < STEPS_PER_SEC*3:
+                    while steps_without_progress < STEPS_PER_SEC*4 and steps_not_moving < 5:
                         godot.update()
+
+                        # Is Pacman making any progress?
                         if godot._pacman.score != last_score:
-                            remaining_steps += STEPS_PER_SEC
                             last_score = godot._pacman.score
                             steps_without_progress = 0
                         else:
                             steps_without_progress += 1
+                        n = 0
+                        for key in dist_to_walls.keys():
+                            if round(dist_to_walls[key], 8) == round(godot._pacman.walls[key], 8):
+                                n += 1
+                        if n == 4:
+                            steps_not_moving += 1
+                        else:
+                            steps_not_moving = 0
+                        dist_to_walls = godot._pacman.walls.copy()
+
                         value = net.activate(godot.to_array())
                         # print("Activation yielded ", value)
                         key = array_to_key(value)
                         print("Key: ", key)
                         godot.move(key)
                         print(key, ": ", value)
-                        print("Remaining steps: ", remaining_steps)
-                        remaining_steps = remaining_steps - 1
+                        print("Steps without progress: ",
+                              steps_without_progress)
+                        print("Steps without moving: ",
+                              steps_not_moving)
                         sleep(1.0 / STEPS_PER_SEC)
                     print("Score: ", godot._pacman.score)
                     genome.fitness = godot._pacman.score
