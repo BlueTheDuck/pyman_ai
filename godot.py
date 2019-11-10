@@ -1,10 +1,9 @@
 from socket import socket
-import struct
 from array import array
-import numpy as np
-import neat
 from neat.genes import DefaultNodeGene
 from neat.genes import DefaultConnectionGene
+import struct
+import neat
 
 FWD = 0
 ROT_LEFT = 1
@@ -17,9 +16,7 @@ def array_to_key(vals: list):
     for i in range(vals.__len__()):
         if vals[i] > vals[highest_i]:
             highest_i = i
-    if vals[highest_i] > 0.7:
-        return highest_i
-    return -1
+    return highest_i
 
 
 class Pacman:
@@ -114,19 +111,19 @@ class Godot:
         print("Updating internal state")
         self._dots_dist = []
         self.send_arr([0xFE, 0xFE])
-        # print("Req. sent")
-        # print("Reading dots")
+        print("Req. sent")
+        print("Reading dots")
         dots_keys = self._pacman.dots.keys()
         for key in self._pacman.dots.keys():
             self._pacman.dots[key] = self.read_float()
-        # print("Reading walls")
+        print("Reading walls")
         for key in self._pacman.walls.keys():
             self._pacman.walls[key] = self.read_float()
-        # print("Reading ghosts")
+        print("Reading ghosts")
         for key in self._pacman.ghosts.keys():
             self._pacman.ghosts[key] = self.read_float()
         self._pacman.score = float(self.read_uint())
-        # print("Done updating")
+        print("Done updating")
 
     def quit(self):
         print("Quit")

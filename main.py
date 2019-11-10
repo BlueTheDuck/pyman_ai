@@ -1,10 +1,9 @@
-import socket
 from time import sleep
 from random import randint
 from godot import Godot, array_to_key
-import numpy as np
-import neat
 from sys import argv
+import socket
+import neat
 
 
 HOST = "127.0.0.1"
@@ -75,6 +74,7 @@ def eval_genomes(genomes, config):
                     genome.fitness = godot._pacman.score
                     print("Fitness: ", genome.fitness)
                 except Exception as e:
+                    godot.quit()
                     raise
                 finally:
                     godot.quit()
