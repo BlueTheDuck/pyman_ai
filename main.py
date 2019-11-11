@@ -99,5 +99,8 @@ else:
     pop = neat.Population(config)
 pop.add_reporter(neat.StdOutReporter(False))
 pop.add_reporter(neat.Checkpointer(1, 30, "checkpoints/neat-"))
+pop.add_reporter(neat.StatisticsReporter())
 winner = pop.run(eval_genomes)
+with open("winner", "w") as file:
+    file.write(str(winner))
 print('\nBest genome:\n{!s}'.format(winner))
