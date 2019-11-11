@@ -71,7 +71,7 @@ def eval_genomes(genomes, config):
                               steps_not_moving)
                         sleep(1.0 / STEPS_PER_SEC)
                     print("Score: ", godot._pacman.score)
-                    genome.fitness = godot._pacman.score
+                    genome.fitness = godot._pacman.score * godot._pacman.score
                     print("Fitness: ", genome.fitness)
                     godot.quit()
                 except BrokenPipeError as bp:
