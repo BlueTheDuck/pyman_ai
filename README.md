@@ -16,7 +16,7 @@ This project is a simple program that uses a *neural network* to play Pacman. To
 
 1. Install [Neat](https://github.com/CodeReclaimers/neat-python)
 2. Clone the [game](github.com/PeronTheDuck/godot_pacman)
-3. run `main.py` to start the training
+3. run `main.py` to start the training from the beginning
    1. Additionally, you can run with it a file from `checkpoints` to see different NNs partially trained
 4. Run the game
 
