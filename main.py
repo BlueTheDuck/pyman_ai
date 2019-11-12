@@ -40,7 +40,7 @@ def eval_genomes(genomes, config):
                         "back": 0,
                     }
                     last_score = 0
-                    while steps_without_progress < STEPS_PER_SEC*4 and steps_not_moving < 5:
+                    while steps_without_progress < STEPS_PER_SEC*5 and steps_not_moving < 5:
                         godot.update()
 
                         # Is Pacman making any progress?
