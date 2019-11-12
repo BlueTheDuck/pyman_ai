@@ -1,0 +1,1 @@
+The last generation (39) seems to work fine, so the next step is to add the first Ghost
