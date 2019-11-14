@@ -51,7 +51,7 @@ def eval_genomes(genomes, config):
                             steps_without_progress += 1
                         n = 0
                         for key in dist_to_walls.keys():
-                            if round(dist_to_walls[key], 8) == round(godot._pacman.walls[key], 8):
+                            if round(dist_to_walls[key], 1) == round(godot._pacman.walls[key], 1):
                                 n += 1
                         if n == 4:
                             steps_not_moving += 1
