@@ -40,8 +40,9 @@ def eval_genomes(genomes, config):
                         "back": 0,
                     }
                     last_score = 0
-                    while steps_without_progress < STEPS_PER_SEC*5 and steps_not_moving < 5:
-                        godot.update()
+                    while steps_without_progress < STEPS_PER_SEC*5 and steps_not_moving < STEPS_PER_SEC/2.0:
+                        if godot.update() == False:  # Can continue updating?
+                            break
 
                         # Is Pacman making any progress?
                         if godot._pacman.score != last_score:
@@ -49,15 +50,16 @@ def eval_genomes(genomes, config):
                             steps_without_progress = 0
                         else:
                             steps_without_progress += 1
-                        n = 0
-                        for key in dist_to_walls.keys():
-                            if round(dist_to_walls[key], 1) == round(godot._pacman.walls[key], 1):
-                                n += 1
-                        if n == 4:
-                            steps_not_moving += 1
-                        else:
-                            steps_not_moving = 0
-                        dist_to_walls = godot._pacman.walls.copy()
+                        if steps_without_progress % 2 == 1:
+                            n = 0
+                            for key in dist_to_walls.keys():
+                                if (dist_to_walls[key] - godot._pacman.walls[key]) < 0.01:
+                                    n += 1
+                            if n == 3 or n == 4:
+                                steps_not_moving += 1
+                            else:
+                                steps_not_moving = 0
+                            dist_to_walls = godot._pacman.walls.copy()
 
                         value = net.activate(godot.to_array())
                         # print("Activation yielded ", value)
