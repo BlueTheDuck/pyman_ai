@@ -40,7 +40,7 @@ def eval_genomes(genomes, config):
                         "back": 0,
                     }
                     last_score = 0
-                    while steps_without_progress < STEPS_PER_SEC*5 and steps_not_moving < STEPS_PER_SEC/2.0:
+                    while steps_without_progress < STEPS_PER_SEC*10 and steps_not_moving < STEPS_PER_SEC/2.0:
                         if godot.update() == False:  # Can continue updating?
                             break
 
